@@ -2,9 +2,9 @@
 
 ## Overview
 
-The **Hand Tracking Menu System for Unity** is a dynamic, reusable, and modular user interface (UI) designed for Unity's XR development. This system enables intuitive interaction with menus using hand gestures, powered by Unity's **XR Hands 1.5.0** package.
+The **Hand Tracking Menu System for Unity** is a dynamic, reusable, and modular user interface (UI) designed for Unity's XR development. This system enables intuitive interaction with menus using hand gestures feature from Unity's **XR Hands 1.5.0** package.
 
-The menu system is built using the **Finite State Design Pattern** and is compatible with Unity's **StaticHandGesture** script for gesture recognition. It supports animations, sound effects, and real-time fingertip tracking, offering a polished and engaging user experience.
+The menu system supports animations, sound effects, and real-time fingertip tracking.
 
 ---
 
@@ -26,36 +26,39 @@ The menu system is built using the **Finite State Design Pattern** and is compat
 
 - **Modular Architecture**:
   - **Branching States** for hierarchical menu navigation.
-  - **Action States** to trigger specific actions.
+  - **Action States** to raise events.
 
-- **Polished Experience**:
-  - Integrated sound effects via the **AudioManager**.
+- **Audio and Animation Support**:
+  - Integrated sound effects via Audiosource and handled by **AudioManager**.
   - Smooth animations handled by **AnimationManager** using LeanTween.
 
 ---
 
 ## Prerequisites
 
-Ensure your Unity project meets the following requirements:
+- Unity 2023.1 or newer. (Unity 6)
 
-- Unity 2023.1 or newer.
 - **Required Packages**:
-  - XR Interaction Toolkit 3.0.
   - XR Hands 1.5.0.
   - LeanTween.
 
+- **Recommended Packages**:
+   - XR Intraction Toolkit 3.0.7
+
 ---
 
-## Setup Guide
+## Complete Setup Guide
 
 ### Step 1: Import Package
-- Download and import the `HandTrackingMenuSystem_v1` package into your Unity project.
+- Download and import the `HandTrackingMenuSystem_v1.0` package into your Unity project.
 
 ### Step 2: XR Rig Setup
-- Use the XR Rig from the **XR Interaction Toolkit** (recommended).
-- Ensure it includes `Left/Right Interaction Visuals`.
+- Use the XR Rig from the **XR Interaction Toolkit** (recommended). Use its `Left/Right Interaction Visuals` inside the correspondent for the `Hand Tracking Event` required by FingerTracker component.
+- If not, make sure to add an `Hand Tracking Event` component to each of your hand controls.
 
 ### Step 3: Create a State Manager
+(You can skip this step if you add `Hand Tracking Menu System` prefab to the scene)
+
 1. Create an empty GameObject named **UIStateManager**.
 2. Attach the following components:
    - `UIStateMachine`
@@ -65,8 +68,10 @@ Ensure your Unity project meets the following requirements:
    - `UICreator`.
 
 ### Step 4: Configure Dependencies
-1. Link the **Left/Right Interaction Visuals** to the `FingerTracker`.
-2. Assign the following to the `UIStateMachine`:
+(You can skip item 2 of this step if you have added `Hand Tracking Menu System` prefab to the scene)
+
+1. Link the **Left/Right Interaction Visuals** or the scene object with **Hand Tracking Event** component to the `FingerTracker`.
+2. Assign the following to the `UIStateMachine`: 
    - `FingerTracker`
    - `AnimationManager`
    - `AudioManager`
@@ -95,29 +100,28 @@ Ensure your Unity project meets the following requirements:
 1. **Create Custom Hand Poses**:
    - Follow the **Unity XR Hands 1.5.0 tutorial** to create custom hand poses for gestures.
    - Assign hand poses to gestures based on their functionality.
+   -Inside the 
 
 2. **Assign UIStateManager to Gesture Events**:
-   - Add the **UIStateManager** object to the **Gesture Performed** or **Gesture Ended** fields in your hand gesture settings.
+   - Create a empty object for each Hand Gesture.
+   - Add `CustomStaticHandGesture`component to each one of the created game objects.
+   - Add the **UIStateManager** object to the **Gesture Performed** or **Gesture Ended** fields in each of the static hand gesture settings.
 
 3. **Map Functions to Gestures**:
    - In the Inspector, assign the following methods from `UIStateMachine` to desired gestures:
      - **Palm Up Gesture** → `MenuOn`
      - **Palm Down Gesture** → `MenuOff`
-     - **Pinch Gestures (Index/Middle/Ring/Little)** → `StateActivator`
      - **Thumb to Side Gesture** → `BackToParent`
+     - **Pinch Gestures (Index/Middle/Ring/Little)** → `StateActivator`
+
+     For `StateActivator` you have to assign a number from 0 to 3 that corresponds to each index.
+     (0 for index finger, 1 for middle finger, 2 for ring finger and 3 for little finger).
 
 4. **Recommended Mapping**:
    - **Palm Up**: Turn the menu on.
    - **Palm Down**: Turn the menu off.
    - **Index/Middle/Ring/Little Finger Pinches**: Activate corresponding states.
    - **Thumb to Side**: Navigate back to the parent state.
-
----
-
-## Testing and Refinement
-
-- Enter Play mode and use hand gestures to test the menu system.
-- Adjust hand pose parameters and gesture mappings for optimal performance.
 
 ---
 
@@ -131,5 +135,3 @@ Ensure your Unity project meets the following requirements:
 - **AnimationManager**: Plays LeanTween animations for smooth transitions.
 - **UICreator**: Dynamically creates UI elements at runtime.
 - **ActionEventListener**: Manages UnityEvents for actions.
-
----
